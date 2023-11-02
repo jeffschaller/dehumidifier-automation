@@ -29,7 +29,7 @@ void setup() {
   }
   else Serial.println("Device initialized!");
 
-  //enable color sensign mode
+  //enable color sensing mode
   apds.enableColor(true);
 }
 
