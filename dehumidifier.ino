@@ -34,8 +34,8 @@ void setup() {
 }
 
 void loop() {
-  //create some variables to store the color data in
-  uint16_t r, g, b, c;
+  //create some variables to store the color data in; unused except for 'red'
+  uint16_t red, g, b, c;
   
   //wait for color data to be ready
   while(!apds.colorDataReady()){
@@ -43,9 +43,9 @@ void loop() {
   }
 
   //get fresh data
-  apds.getColorData(&r, &g, &b, &c);
-  Serial.print("red value is:"); Serial.println(r);
-  if(r > 50) {
+  apds.getColorData(&red, &g, &b, &c);
+  Serial.print("red value is:"); Serial.println(red);
+  if(red > 50) {
     Serial.println("start the pump (for 5 sec)");
     delay(5 * 1000);  /* 5 sec in ms; TODO: eventually 4min */
     Serial.println("stop the pump");
