@@ -5,6 +5,10 @@
 #include "Adafruit_APDS9960.h"
 Adafruit_APDS9960 apds;
 
+/*
+  vim: syntax=C
+*/
+
 // the pin we're using to talk to the relay
 #define PIN_TO_RELAY 6
 
