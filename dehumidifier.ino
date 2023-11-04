@@ -20,7 +20,7 @@ void setup() {
 
   apds.enableColor(true);
   pinMode(PIN_TO_RELAY, OUTPUT);
-  // start with the relay "open" AKA  not running the pump
+  // start with the relay "open" AKA not running the pump
   digitalWrite(PIN_TO_RELAY, LOW);
 }
 
@@ -59,6 +59,7 @@ void loop() {
       Serial.println("start the pump (for 5 sec)");
     }
     
+    // "close" the relay to turn on the pump
     digitalWrite(PIN_TO_RELAY, HIGH);
     
     if (debug > 2) {
@@ -69,6 +70,8 @@ void loop() {
         Serial.println("pumping: Relay pin is LOW / disabled");
       }
     }
+
+    // wait for a while for the pump to do its work
     // 5 sec in ms; TODO: eventually 4min 
     delay(5 * 1000);
     
@@ -76,6 +79,7 @@ void loop() {
       Serial.println("stop the pump");
     }
 
+    // "open" the relay to turn off the pump
     digitalWrite(PIN_TO_RELAY, LOW);
   }
   // 1 sec in ms; TODO: increase when ready
