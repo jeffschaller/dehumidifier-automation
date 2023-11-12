@@ -5,17 +5,29 @@
 #include "Adafruit_APDS9960.h"
 Adafruit_APDS9960 apds;
 
-// the pin we're using to talk to the relay
+// the pin on the feather that we're using to talk to the relay
 #define PIN_TO_RELAY 6
 
+// experimentally-determined threshold
+// tested with room lights on & off, and with
+// the sensor positioned behind the dehumidifier light, 
+// facing downward about 45 degrees, with the edges of the
+// connectors touching the dehumidifier
+#define BUCKET_FULL_RED 50
+
 void setup() {
+  // enable Serial communication
   Serial.begin(115200);
+
+  // try to start the color sensor
   if(!apds.begin()) {
     Serial.println("failed to initialize device! Please check your wiring.");
   }
   else {
     // Assume success
     // Serial.println("Device initialized!");
+
+    // we want color readings
     apds.enableColor(true);
   }
 
@@ -29,8 +41,8 @@ void setup() {
 }
 
 void loop() {
-  // create some variables to store the color data in; mostly unused, except for 'red'
-  uint16_t red, g, b, c;
+  // create some variables to store the color data in; unused, except for 'red'
+  uint16_t red, green, blue, clear;
 
   // for checking the relay pin state
   int relay_pin_state = 0;
@@ -39,11 +51,11 @@ void loop() {
   int debug = 1;
   
   // wait for color data to be ready
-  while(!apds.colorDataReady()){
+  while (!apds.colorDataReady()) {
     delay(5);
   }
   // get fresh data; we only care about the red, but we have to read them all
-  apds.getColorData(&red, &g, &b, &c);
+  apds.getColorData(&red, &green, &blue, &clear);
 
   if (debug) {
     Serial.print("current red value is:"); Serial.println(red);
@@ -58,7 +70,7 @@ void loop() {
     }
   }
 
-  if(red > 50) {
+  if (red > BUCKET_FULL_RED) {
     if (debug) {
       Serial.println("start the pump (for 5 sec)");
     }
@@ -78,7 +90,7 @@ void loop() {
     }
 
     // wait for a while for the pump to do its work
-    // 5 sec in ms; TODO: eventually 4 min 
+    // 5 sec in ms; TODO: eventually circa 4 min 
     delay(5 * 1000);
     
     if (debug) {
@@ -90,6 +102,6 @@ void loop() {
     // "open" the relay to turn off the pump
     digitalWrite(PIN_TO_RELAY, LOW);
   }
-  // 1 sec in ms
+  // no need to spazz the sensor reading; wait 1 sec in ms
   delay(1 * 1000);
 }
