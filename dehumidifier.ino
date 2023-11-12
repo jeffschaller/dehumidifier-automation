@@ -16,12 +16,16 @@ void setup() {
   else {
     // Assume success
     // Serial.println("Device initialized!");
+    apds.enableColor(true);
   }
 
-  apds.enableColor(true);
+  // define the relay pin as an OUTPUT pin
   pinMode(PIN_TO_RELAY, OUTPUT);
   // start with the relay "open" AKA not running the pump
   digitalWrite(PIN_TO_RELAY, LOW);
+
+  // use the built-in LED as an external signal for "pumping"
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
@@ -59,9 +63,11 @@ void loop() {
       Serial.println("start the pump (for 5 sec)");
     }
     
+    // light up the built-in LED
+    digitalWrite(LED_BUILTIN, HIGH);
     // "close" the relay to turn on the pump
     digitalWrite(PIN_TO_RELAY, HIGH);
-    
+
     if (debug > 2) {
       relay_pin_state = digitalRead(PIN_TO_RELAY);
       if (relay_pin_state == HIGH) {
@@ -72,16 +78,18 @@ void loop() {
     }
 
     // wait for a while for the pump to do its work
-    // 5 sec in ms; TODO: eventually 4min 
+    // 5 sec in ms; TODO: eventually 4 min 
     delay(5 * 1000);
     
     if (debug) {
       Serial.println("stop the pump");
     }
 
+    // turn off the built-in LED
+    digitalWrite(LED_BUILTIN, LOW);
     // "open" the relay to turn off the pump
     digitalWrite(PIN_TO_RELAY, LOW);
   }
-  // 1 sec in ms; TODO: increase when ready
+  // 1 sec in ms
   delay(1 * 1000);
 }
