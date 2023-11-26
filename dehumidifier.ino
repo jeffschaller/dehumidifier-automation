@@ -3,10 +3,12 @@
 // copied & modified from the source at: https://github.com/adafruit/Adafruit_APDS9960/blob/master/examples/color_sensor/color_sensor.ino
 
 #include "Adafruit_APDS9960.h"
+// create a global color sensor object "apds"
 Adafruit_APDS9960 apds;
 
 // the pin on the feather that we're using to talk to the relay
-#define PIN_TO_RELAY 6
+// this hole is labeled "6" on the front but is really GPIO8
+#define PIN_TO_RELAY 8
 
 // experimentally-determined threshold
 // tested with room lights on & off, and with
@@ -72,7 +74,7 @@ void loop() {
 
   if (red > BUCKET_FULL_RED) {
     if (debug) {
-      Serial.println("start the pump (for 5 sec)");
+      Serial.println("start the pump");
     }
     
     // light up the built-in LED
@@ -83,15 +85,14 @@ void loop() {
     if (debug > 2) {
       relay_pin_state = digitalRead(PIN_TO_RELAY);
       if (relay_pin_state == HIGH) {
-        Serial.println("pumping: Relay pin is HIGH / enabled");
+        Serial.println("pumping: Relay pin #PIN_TO_RELAY is HIGH / enabled");
       } else {
-        Serial.println("pumping: Relay pin is LOW / disabled");
+        Serial.println("pumping: Relay pin #PIN_TO_RELAY is LOW / disabled");
       }
     }
 
-    // wait for a while for the pump to do its work
-    // 5 sec in ms; TODO: eventually circa 4 min 
-    delay(5 * 1000);
+    // wait for a while for the pump to do its work, in ms
+    delay(4 * 60 * 1000);
     
     if (debug) {
       Serial.println("stop the pump");
